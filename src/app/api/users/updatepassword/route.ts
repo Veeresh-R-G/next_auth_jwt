@@ -8,15 +8,11 @@ export async function POST(req: NextRequest) {
     const salt = await bcryptjs.genSalt(15)
     const hashedPass = await bcryptjs.hash(newPassword , salt)
     
-    console.log("yooooo");
-
-    
-
-    const response = await User.findOneAndUpdate({forgotPasswordToken:token,
+    const user = await User.findOneAndUpdate({forgotPasswordToken:token,
         forgotPasswordTokenExpiry: {$gt : Date.now()} 
-    },{password:hashedPass})
+    },{password:hashedPass,forgotPasswordToken:null,forgotPasswordTokenExpiry:null})
 
-    if(!response){
+    if(!user){
         return NextResponse.json({message:"Password Not Changed Successfully"},{status: 401})
     }
 

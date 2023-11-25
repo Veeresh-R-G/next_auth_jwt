@@ -5,7 +5,6 @@ import { sendEmail } from "@/helpers/mailer";
 
 export async function POST(request: NextRequest) {
     
-    console.log("HOLLLLLLA")
     const reqBody = await request.json()
     const {email} = reqBody;
 
