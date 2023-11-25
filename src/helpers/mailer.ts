@@ -21,7 +21,7 @@ export const sendEmail = async ({email, emailType, userId}:any) => {
             to: email,
             subject: emailType,
             html:`<p>Click 
-            <a href="${process.env.DOMAIN}/verifyemail?token=${hash}">HERE</a> 
+            <a href="${process.env.DOMAIN}/${emailType==="VERIFY" ? "verifyemail":"verifypassword"}?token=${hash}">HERE</a> 
             to ${emailType==="RESET" ? "Reset Password" : "Verify your Email"}
             </p>`
 
@@ -31,7 +31,7 @@ export const sendEmail = async ({email, emailType, userId}:any) => {
         // 2. Forgot Password 
 
         if(emailType=="VERIFY"){
-            const user = await User.findByIdAndUpdate({_id: userId},
+            await User.findByIdAndUpdate({_id: userId},
                 {
                     verifyToken: hash,
                     verifyTokenExpiry: Date.now() + 3600000,
@@ -41,7 +41,7 @@ export const sendEmail = async ({email, emailType, userId}:any) => {
                 })
         }
         else if(emailType == "RESET"){
-            const user = await User.findByIdAndUpdate({_id: userId},
+            await User.findByIdAndUpdate({_id: userId},
                 {
                     forgotPasswordToken: hash,
                     forgotPasswordTokenExpiry: Date.now() + 3600000,
@@ -52,12 +52,8 @@ export const sendEmail = async ({email, emailType, userId}:any) => {
         }
 
         const mailResponse = await transport.sendMail(mailOptions)
-
-        console.log(mailResponse);
-        
+       
         return mailResponse
-        
-
     }
     catch(err:any){
         throw new Error(err.message)
