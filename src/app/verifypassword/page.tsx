@@ -25,7 +25,6 @@ export default function Page() {
 
             try{
                 const response = await axios.post("/api/users/updatepassword",{token:token, newPassword: pass})
-                console.log(response)
                 if(response.status === 201){
                     toast.success(response.data.message)
                     router.push("/login")
