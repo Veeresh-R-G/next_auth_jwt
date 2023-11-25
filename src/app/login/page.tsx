@@ -45,8 +45,24 @@ export default function SignUp(){
         helper()   
     }
 
-    const handleForgotPassword = () => {
+    const handleForgotPassword = async () => {
 
+        if(!user.email){
+            toast.error("Please Enter Valid Email ID")
+            return;
+        }
+
+        try{
+            const resp = await axios.post("/api/users/resetpassword",{email:user.email})
+            
+            if(resp.data.status === 201){
+                toast.success(resp.data.message)
+            }
+        }
+        catch(err:any){
+            console.log("Forgot Password");            
+            toast.error(err.response.data.message)
+        }
         
     }
     return (
@@ -72,7 +88,7 @@ export default function SignUp(){
 
             <button
             onClick={handleForgotPassword}
-            className="bg-white p-1 px-3 text-black rounded-lg m-2 font-semibold"
+            className="bg-blue-600 p-1 px-3 text-white rounded-lg m-2 font-semibold"
             >Forgot Password</button>
         <Link className="text-center" href="/signup">Dont have an Account ? <br/> Visit SignUp Page</Link>
         </div> 
